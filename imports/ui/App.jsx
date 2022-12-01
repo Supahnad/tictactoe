@@ -59,17 +59,37 @@ export const App = () => {
         setMatch(true);
         setRestart(false);
         // setWinner(square[a]);
-        console.log("test" + match);
+        
+        // console.log("test" + match);
       }
-      if (boxFull) {
-       setBoxFull(true)
-      }
+      if(boxFull === true){ 
+        if(square[a] === square[b] && square[b] === square[c]){
+          setMatch(true);
+          console.log("match " + match);
+        }
+        if(square[a] !== square[b] && square[b] !== square[c]){
+          setMatch(false);
+          console.log("match on draw " + match);
+        }
+        if(match === false){
+          console.log("testdraw" );
+        }
+      } 
+      // if (
+      //   boxFull &&
+      //   square[a] !== square[b] &&
+      //   square[b] !== square[c] &&
+      //   square[a] !== square[c]
+      // ) {
+      //   //  setBoxFull(true)
+      //   console.log("box is full");
+      // }
 
-      if(boxFull === true){
+      else if (boxFull === true) {
         if (match === true) {
           console.log("Win ");
           //win
-        } else {
+        } else if (match === false) {
           //draw
           console.log("draw");
         }
