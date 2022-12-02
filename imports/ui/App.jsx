@@ -14,17 +14,17 @@ export const App = () => {
   const [match, setMatch] = useState();
   const [boxfull, setBoxFull] = useState();
 
-  useEffect(() => {
-    checkForWinner(squares);
-    // CheckIfTie();
-  }, [match]);
+  // useEffect(() => {
+  //   checkForWinner(squares);
+  //   // CheckIfTie();
+  // }, [squares]);
 
   // useEffect(() => {
   //   checkForWinner(squares);
   //   // CheckIfTie();
   // }, [restart]);
 
-  const checkForWinner = (square) => {
+  const checkForWinner = (square, index) => {
     let patterns = [
       [0, 1, 2],
       [3, 4, 5],
@@ -35,86 +35,122 @@ export const App = () => {
       [0, 4, 8],
       [2, 4, 6],
     ];
+
     const boxFull = squares.every((square) => {
       if (square !== null) {
         return square;
       }
     });
+    // patterns.forEach((element) => {
+    //   console.log(squares[element[1]]);
+    // });
+
+    // for (let i = 0; i < patterns.length; i++) {
+    //   const [a, b, c] = patterns[i];
+    //   console.log("this is a "+squares[a]);
+    //   // console.log("this is b "+patterns[b]);
+
+    //   if (square[a] && square[a] === square[b] && square[b] === square[c]){
+    //     console.log("hello")
+    //   }
+    // }
+    // console.log([patterns[i]]);
+    // console.log(a);
+    // console.log(b);
+    // console.log(c);
+    // console.log("START Patterns --------");
+    // console.log("Index: " + a + ": " + square[a]);
+    // console.log("Index: " + b + ": " + square[b]);
+    // console.log("Index: " + c + ": " + square[c]);
+    // console.log("END Patterns");
+    // console.log("match is " + match);
+
+    // for(let pattern in patterns){
+    //   console.log("this is "+patterns);
+    // }
     for (let i = 0; i < patterns.length; i++) {
       const [a, b, c] = patterns[i];
-      // console.log([patterns[i]]);
-      // console.log(a);
-      // console.log(b);
-      // console.log(c);
-      // console.log("START Patterns --------");
-      // console.log("Index: " + a + ": " + square[a]);
-      // console.log("Index: " + b + ": " + square[b]);
-      // console.log("Index: " + c + ": " + square[c]);
-      // console.log("END Patterns");
-      // console.log("match is " + match);
+      //   // console.log([patterns[i]]);
+      //   // console.log(a);
+      //   // console.log(b);
+      //   // console.log(c);
+      //   // console.log("START Patterns --------");
+      //   // console.log("Index: " + a + ": " + square[a]);
+      //   // console.log("Index: " + b + ": " + square[b]);
+      //   // console.log("Index: " + c + ": " + square[c]);
+      //   // console.log("END Patterns");
+      //   // console.log("match is " + match);
 
-      // console.log("boxfull is " + boxFull);
+      //   // console.log("boxfull is " + boxFull);
 
-      // if (square[a] && square[a] === square[b] && square[b] === square[c]) {
-      //   setMatch(true);
-      //   setRestart(false);
-      //   // setWinner(square[a]);
-        
-      //   // console.log("test" + match);
-      // }
-      if(boxFull === true){ 
-        if(square[a] && square[a] === square[b] && square[b] === square[c]){
-          setMatch(true);
-          console.log("match " + match);
-        }else if(square[a] && square[a] !== square[b] && square[a] !== square[c]){
-          setMatch(false);
-          console.log("match on draw " + match);
-          console.log(match)
-        }
-        if(match === false){
-          console.log("testdraw" );
-        }
-      } 
-      // if (
-      //   boxFull &&
-      //   square[a] !== square[b] &&
-      //   square[b] !== square[c] &&
-      //   square[a] !== square[c]
-      // ) {
-      //   //  setBoxFull(true)
-      //   console.log("box is full");
-      // }
+      //   // if (square[a] && square[a] === square[b] && square[b] === square[c]) {
+      //   //   setMatch(true);
+      //   //   setRestart(false);
+      //   //   // setWinner(square[a]);
 
-      else if (boxFull === true) {
-        if (match === true) {
-          console.log("Win ");
-          //win
-        } else if (match === false) {
-          //draw
-          console.log("draw");
-          
+      //   //   // console.log("test" + match);
+      //   // }
+        if (boxFull === true) {
+         if (square[a] && square[a] === square[b] && square[b] === square[c]) {
+          // setMatch(true);
+          console.log("match win");
+
+        } 
+        if(square[a] !== square[b] && square[a] !== square[c])  {
+          console.log("test: " + square[a] + square[b]+ square[c]);
+          console.log("match draw");
         }
       }
-      // console.log(match);
-
-      // if (boxFull && match === false) {
-      //   setRestart(true);
-      //   console.log("restart is " + restart);
-      // }
-
-      if (match) {
-        // console.log("box not full with pattern win");
-        // setWinner(square[a]);
-      } //else if (match && boxFull) {
-      //   setWinner(square[a]);
-      //   console.log("box full with pattern");
-      // }
-      // if (restart === true) {
-      //   setDraw(true);
-      //   // setRestart(true);
-      //   console.log("gello");
-      // }
     }
+    // if(square[a] !== square[b] && square[a] !== square[c]){
+    //   setMatch(false);
+    //   console.log("match on draw " + match);
+    //   console.log(match)
+    //}
+    //   if(match === false){
+    //     console.log("testdraw" );
+    //   }
+    // }
+    // if (
+    //   boxFull &&
+    //   square[a] !== square[b] &&
+    //   square[b] !== square[c] &&
+    //   square[a] !== square[c]
+    // ) {
+    //   //  setBoxFull(true)
+    //   console.log("box is full");
+    // }
+
+    // else if (boxFull === true) {
+    //   if (match === true) {
+    //     console.log("Win ");
+    //     //win
+    //   } else if (match === false) {
+    //     //draw
+    //     console.log("draw");
+
+    //   }
+    // }
+    // console.log(match);
+
+    // if (boxFull && match === false) {
+    //   setRestart(true);
+    //   console.log("restart is " + restart);
+    // }
+
+    // if (match) {
+    //   // console.log("box not full with pattern win");
+    //   // setWinner(square[a]);
+    // } //else if (match && boxFull) {
+    //   setWinner(square[a]);
+    //   console.log("box full with pattern");
+    // }
+    // if (restart === true) {
+    //   setDraw(true);
+    //   // setRestart(true);
+    //   console.log("gello");
+    // }
+    //}
   };
 
   // const CheckIfTie = () => {
