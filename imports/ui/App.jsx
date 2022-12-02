@@ -49,9 +49,8 @@ export const App = () => {
       if (boxFull === true) {
         if (square[a] && square[a] === square[b] && square[b] === square[c]) {
           setWinner(square[a]);
-          console.log("match win");
         }
-        if (square[a] !== square[b] && square[a] !== square[c]) {
+        if (square[a] !== square[b] && square[a] !== square[c] && !winner) {
           setDraw(true);
         }
       }
@@ -100,7 +99,7 @@ export const App = () => {
         <span>X: {xscore}</span>
         <span>O: {oscore}</span>
       </div>
-      {/* created a new array of Squares Component 
+      {/* created a new array of Squares Component
          using the map() and the created array earlier ---> const [squares, setSquares] = useState(new Array(9).fill(null));*/}
       {/* the x and o props determines if the square is x or o */}
       <>
