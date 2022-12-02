@@ -10,19 +10,6 @@ export const App = () => {
   const [xscore, setxScore] = useState(0);
   const [oscore, setoScore] = useState(0);
   const [draw, setDraw] = useState(false);
-  const [restart, setRestart] = useState(false);
-  const [match, setMatch] = useState();
-  const [boxfull, setBoxFull] = useState();
-
-  // useEffect(() => {
-  //   checkForWinner(squares);
-  //   // CheckIfTie();
-  // }, [squares]);
-
-  // useEffect(() => {
-  //   checkForWinner(squares);
-  //   // CheckIfTie();
-  // }, [restart]);
 
   const checkForWinner = (square, index) => {
     let patterns = [
@@ -41,127 +28,35 @@ export const App = () => {
         return square;
       }
     });
-    // patterns.forEach((element) => {
-    //   console.log(squares[element[1]]);
-    // });
 
-    // for (let i = 0; i < patterns.length; i++) {
-    //   const [a, b, c] = patterns[i];
-    //   console.log("this is a "+squares[a]);
-    //   // console.log("this is b "+patterns[b]);
-
-    //   if (square[a] && square[a] === square[b] && square[b] === square[c]){
-    //     console.log("hello")
-    //   }
-    // }
-    // console.log([patterns[i]]);
-    // console.log(a);
-    // console.log(b);
-    // console.log(c);
-    // console.log("START Patterns --------");
-    // console.log("Index: " + a + ": " + square[a]);
-    // console.log("Index: " + b + ": " + square[b]);
-    // console.log("Index: " + c + ": " + square[c]);
-    // console.log("END Patterns");
-    // console.log("match is " + match);
-
-    // for(let pattern in patterns){
-    //   console.log("this is "+patterns);
-    // }
     for (let i = 0; i < patterns.length; i++) {
       const [a, b, c] = patterns[i];
-      //   // console.log([patterns[i]]);
-      //   // console.log(a);
-      //   // console.log(b);
-      //   // console.log(c);
-      //   // console.log("START Patterns --------");
-      //   // console.log("Index: " + a + ": " + square[a]);
-      //   // console.log("Index: " + b + ": " + square[b]);
-      //   // console.log("Index: " + c + ": " + square[c]);
-      //   // console.log("END Patterns");
-      //   // console.log("match is " + match);
 
-      //   // console.log("boxfull is " + boxFull);
+      if (
+        square[a] &&
+        square[a] === square[b] &&
+        square[b] === square[c] &&
+        !boxFull
+      ) {
+        setWinner(square[a]);
+        if (square[a] === "x") {
+          setxScore(xscore + 1);
+        } else if (square[a] === "o") {
+          setoScore(oscore + 1);
+        }
+      }
 
-      //   // if (square[a] && square[a] === square[b] && square[b] === square[c]) {
-      //   //   setMatch(true);
-      //   //   setRestart(false);
-      //   //   // setWinner(square[a]);
-
-      //   //   // console.log("test" + match);
-      //   // }
-        if (boxFull === true) {
-         if (square[a] && square[a] === square[b] && square[b] === square[c]) {
-          // setMatch(true);
+      if (boxFull === true) {
+        if (square[a] && square[a] === square[b] && square[b] === square[c]) {
+          setWinner(square[a]);
           console.log("match win");
-
-        } 
-        if(square[a] !== square[b] && square[a] !== square[c])  {
-          console.log("test: " + square[a] + square[b]+ square[c]);
-          console.log("match draw");
+        }
+        if (square[a] !== square[b] && square[a] !== square[c]) {
+          setDraw(true);
         }
       }
     }
-    // if(square[a] !== square[b] && square[a] !== square[c]){
-    //   setMatch(false);
-    //   console.log("match on draw " + match);
-    //   console.log(match)
-    //}
-    //   if(match === false){
-    //     console.log("testdraw" );
-    //   }
-    // }
-    // if (
-    //   boxFull &&
-    //   square[a] !== square[b] &&
-    //   square[b] !== square[c] &&
-    //   square[a] !== square[c]
-    // ) {
-    //   //  setBoxFull(true)
-    //   console.log("box is full");
-    // }
-
-    // else if (boxFull === true) {
-    //   if (match === true) {
-    //     console.log("Win ");
-    //     //win
-    //   } else if (match === false) {
-    //     //draw
-    //     console.log("draw");
-
-    //   }
-    // }
-    // console.log(match);
-
-    // if (boxFull && match === false) {
-    //   setRestart(true);
-    //   console.log("restart is " + restart);
-    // }
-
-    // if (match) {
-    //   // console.log("box not full with pattern win");
-    //   // setWinner(square[a]);
-    // } //else if (match && boxFull) {
-    //   setWinner(square[a]);
-    //   console.log("box full with pattern");
-    // }
-    // if (restart === true) {
-    //   setDraw(true);
-    //   // setRestart(true);
-    //   console.log("gello");
-    // }
-    //}
   };
-
-  // const CheckIfTie = () => {
-  //   if (!squares.includes(null)) {
-  //     // console.log("its " + restart);
-  //     if (restart === true) {
-  //       console.log("is it good");
-  //       // setDraw(true);
-  //     }
-  //   }
-  // };
 
   const ClickHandler = (index) => {
     const newSquares = squares;
@@ -173,7 +68,6 @@ export const App = () => {
         newSquares[index] = "x";
         console.log("Player X Clicked");
         setSquares([...newSquares]);
-        // console.log(newSquares);
         setTurn("o");
       }
     }
@@ -185,7 +79,6 @@ export const App = () => {
         newSquares[index] = "o";
         console.log("Player O Clicked");
         setSquares([...newSquares]);
-        // console.log(newSquares);
         setTurn("x");
       }
     }
