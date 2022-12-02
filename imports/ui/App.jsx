@@ -49,6 +49,11 @@ export const App = () => {
       if (boxFull === true) {
         if (square[a] && square[a] === square[b] && square[b] === square[c]) {
           setWinner(square[a]);
+          if (square[a] === "x") {
+            setxScore(xscore + 1);
+          } else if (square[a] === "o") {
+            setoScore(oscore + 1);
+          }
         }
         if (square[a] !== square[b] && square[a] !== square[c] && !winner) {
           setDraw(true);
