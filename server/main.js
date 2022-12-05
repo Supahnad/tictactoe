@@ -1,31 +1,25 @@
 import { Meteor } from 'meteor/meteor';
-import { LinksCollection } from '/imports/api/links';
+import { Accounts } from "meteor/accounts-base";
+import { RoomsCollection } from '../imports/api/db/RoomsCollection';
 
-async function insertLink({ title, url }) {
-  await LinksCollection.insertAsync({ title, url, createdAt: new Date() });
-}
+const insertRoom = (roomName, room) =>
+  TasksCollection.insert({
+    roomId: room._id,
+    name: roomName,
+    createdAt: new Date(),
+  });
 
-Meteor.startup(async () => {
-  // If the Links collection is empty, add some data.
-  if (await LinksCollection.find().countAsync() === 0) {
-    await insertLink({
-      title: 'Do the Tutorial',
-      url: 'https://www.meteor.com/tutorials/react/creating-an-app',
-    });
+const SEED_USERNAME = "adminacc";
+const SEED_PASSWORD = "admin";
 
-    await insertLink({
-      title: 'Follow the Guide',
-      url: 'https://guide.meteor.com',
-    });
-
-    await insertLink({
-      title: 'Read the Docs',
-      url: 'https://docs.meteor.com',
-    });
-
-    await insertLink({
-      title: 'Discussions',
-      url: 'https://forums.meteor.com',
+Meteor.startup(() => {
+  if (!Accounts.findUserByUsername(SEED_USERNAME)) {
+    Accounts.createUser({
+      username: SEED_USERNAME,
+      password: SEED_PASSWORD,
     });
   }
 });
+
+
+
