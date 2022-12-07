@@ -1,15 +1,29 @@
 body {
-  padding: 10px;
+  padding: 0;
   font-family: sans-serif;
-  display: flex;
-  align-items: center;
-  height: 80vh;
-  width: 100%;
-  justify-content: center;
+  margin: 0;
 }
-h2{
+
+body > div > .container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+body > div > .game-container {
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+p {
+  margin: 0;
+}
+
+h2 {
   text-align: center;
 }
+
 .board {
   display: grid;
   grid-template-columns: repeat(auto-fit, 33.333333333%);
@@ -42,11 +56,10 @@ h2{
   align-items: center;
   padding: 0;
 }
-
-button {
+.restart-button {
   display: inline-block;
   padding: 15px 25px;
-  font-size: .8rem;
+  font-size: 0.8rem;
   cursor: pointer;
   text-align: center;
   outline: none;
@@ -56,33 +69,253 @@ button {
   border-radius: 15px;
 }
 
-button:hover {
+.restart-button:hover {
   background-color: #6e7e70;
 }
 
-button:active {
+.restart-button:active {
   background-color: #414b41;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
 h5 {
   display: block;
-  font-size: .53em;
+  font-size: 0.53em;
   margin-block-start: 1.67em;
   margin-block-end: 1.67em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;
 }
-.Scoreboard{
+.Scoreboard {
   display: flex;
   margin: 10px auto;
   border: 2px solid #000;
   width: fit-content;
   box-sizing: border-box;
 }
-span{
+span {
   border: 1px solid #000;
   padding: 10px;
   font-weight: bold;
+}
+
+.login-form > div {
+  margin: 8px;
+}
+
+.login-form > div > label {
+  font-weight: bold;
+}
+
+.login-form > div > input {
+  flex-grow: 1;
+  box-sizing: border-box;
+  padding: 10px 6px;
+  background: transparent;
+  border: 1px solid #aaa;
+  width: 100%;
+  font-size: 1em;
+  margin-right: 16px;
+  margin-top: 4px;
+}
+.login-form > div > button {
+  position: relative;
+  display: inline-block;
+  padding: 15px 25px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+.reg-btn {
+  position: relative;
+  display: inline-block;
+  padding: 15px 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  color: rgb(213, 221, 199);
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+.register-form > div {
+  margin: 8px;
+}
+
+.register-form > div > label {
+  font-weight: bold;
+}
+
+.register-form > div > input {
+  flex-grow: 1;
+  box-sizing: border-box;
+  padding: 10px 6px;
+  background: transparent;
+  border: 1px solid #aaa;
+  width: 100%;
+  font-size: 1em;
+  margin-right: 16px;
+  margin-top: 4px;
+}
+.register-form > div > button {
+  position: relative;
+  display: inline-block;
+  padding: 15px 25px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  color: rgb(213, 221, 199);
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+.logout-btn {
+  position: relative;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  align-items: baseline;
+  font-size: large;
+  color: aliceblue;
+  background: none;
+  cursor: pointer;
+  border: none;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background-color: #57abe4;
+  padding: 20px 15px;
+}
+
+.register-btn {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+.login-btn {
+  color: aliceblue;
+}
+
+.room-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.room-container > button {
+  position: relative;
+  display: inline-block;
+  padding: 15px 25px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  color: rgb(213, 221, 199);
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+
+.room-container > button:hover {
+  color: rgb(213, 221, 199);
+  background-color: #2c84be;
+}
+
+.room-container > button:active {
+  color: rgb(213, 221, 199);
+  background-color: #215e86;
+}
+
+.room-form > div > input {
+  box-sizing: border-box;
+  padding: 10px 6px;
+  background: transparent;
+  border: 1px solid #aaa;
+  font-size: 1em;
+  margin-right: 16px;
+  margin-top: 4px;
+}
+.room-form > div > button {
+  position: relative;
+  display: inline-block;
+  padding: 15px 25px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  color: aliceblue;
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+
+.room-form > div > button:hover {
+  color: rgb(213, 221, 199);
+  background-color: #2c84be;
+}
+
+.room-form > div > button:active {
+  color: rgb(213, 221, 199);
+  background-color: #215e86;
+}
+
+.room-form > div {
+  margin: 8px;
+}
+
+.roomNames {
+  position: relative;
+  padding: 20px 30px;
+  margin: 20px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  color: aliceblue;
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+
+.roomNames:hover {
+  color: rgb(213, 221, 199);
+  background-color: #2c84be;
+}
+.roomNames:active {
+  color: rgb(213, 221, 199);
+  background-color: #215e86;
+}
+.roomNames > p {
+  padding-bottom: 10px;
+}
+.roomlists > a {
+  margin-top: 10px;
+  margin-right: 10px;
+  color: rgb(19, 17, 17);
+  display: flex;
+  justify-content: flex-end;
+  text-decoration: none;
+}
+.roomlists > h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
