@@ -5,11 +5,11 @@ import { RoomsCollection } from '../db/RoomsCollection';
 Meteor.methods({
     'createRoom'(name) {
       check(name, String);
-  
+
       if (!this.userId) {
         throw new Meteor.Error('Not authorized.');
       }
-  
+
       RoomsCollection.insert({
         name,
         createdAt: new Date,
@@ -19,11 +19,11 @@ Meteor.methods({
 
     'insert.player2'(roomId) {
       check(roomId, String);
-  
+
       if (!this.userId) {
         throw new Meteor.Error("Not authorized.");
       }
-  
-      RoomsCollection.update(roomId, { $set: { player2id } });
+
+      RoomsCollection.update({_id: roomId}, { $set: { player2id: this.userId } });
     },
   });
