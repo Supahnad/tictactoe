@@ -19,9 +19,15 @@ function RegisterForm() {
       email: email,
       profile: {
         firstName: Fname,
-        fastName: Lname,
+        lastName: Lname,
       },
     });
+
+    setUsername("");
+    setPassword("");
+    setEmail("");
+    setFname("");
+    setLname("");
   };
 
   return (
@@ -33,6 +39,7 @@ function RegisterForm() {
             type="text"
             placeholder="First Name"
             name="Fname"
+            value={Fname}
             required
             onChange={(e) => setFname(e.target.value)}
           />
@@ -43,6 +50,7 @@ function RegisterForm() {
             type="text"
             placeholder="Last Name"
             name="Lname"
+            value={Lname}
             required
             onChange={(e) => setLname(e.target.value)}
           />
@@ -53,6 +61,7 @@ function RegisterForm() {
             type="text"
             placeholder="Email Address"
             name="EmailAddress"
+            value={email}
             required
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -63,6 +72,7 @@ function RegisterForm() {
             type="text"
             placeholder="Username"
             name="username"
+            value={username}
             required
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -74,6 +84,7 @@ function RegisterForm() {
             type="password"
             placeholder="Password"
             name="password"
+            value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -81,7 +92,7 @@ function RegisterForm() {
           <button type="submit">Register</button>
         </div>
         <p>Already have an account?</p>
-        <Link to="/Login">Log In</Link>
+        <Link to="/">Log In</Link>
       </form>
     </div>
   );

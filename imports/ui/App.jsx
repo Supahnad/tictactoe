@@ -13,10 +13,10 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LoginForm />} />
         <Route path="/Home" element={<HomePage />} />
-        <Route path="/TicTacToe" element={<TicTacToePage />} />
         <Route path="/RoomLists" element={<RoomPage />} />
-        <Route path="/LogIn" element={<LoginForm />} />
+        <Route path="/TicTacToe/:roomId" element={<TicTacToePage />} />
         <Route path="/Register" element={<RegisterForm />} />
       </Routes>
     </BrowserRouter>

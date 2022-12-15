@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
+import MainNavigation from "./MainNavigation";
+import { RoomsCollection } from "../db/RoomsCollection";
 import LoginForm from "./LoginForm.jsx";
 import Board from "./board.jsx";
 import Squares from "./squares.jsx";
 
 function TicTacToePage() {
+  const user = useTracker(() => Meteor.userId());
+  const logout = () => Meteor.logout();
+
   const [squares, setSquares] = useState(new Array(9).fill(null));
   const [turn, setTurn] = useState("x");
   const [winner, setWinner] = useState();
@@ -14,9 +19,19 @@ function TicTacToePage() {
   const [oscore, setoScore] = useState(0);
   const [draw, setDraw] = useState(false);
 
-  const user = useTracker(() => Meteor.userId());
+  const player = Meteor.userId();
+  let { roomId } = useParams();
 
-  const logout = () => Meteor.logout();
+
+  const checkForPlayer = () => {
+    Meteor.subscribe("roomData", player);
+    const player1 = RoomsCollection.find({ _id: roomId }).fetch();
+    console.log("player 1 is ", player1);
+  };
+
+  useEffect(() => {
+    checkForPlayer();
+  }, []);
 
   const checkForWinner = (square, index) => {
     let patterns = [
@@ -105,61 +120,52 @@ function TicTacToePage() {
 
   return (
     <>
-      <header>
-        <Link className="logout-btn" to="/LogIn">
-          Log out
-        </Link>
-        
-      </header>
-      {user ? (
-        <>
-          <div className="game-container">
-            <h1>Let's Play TicTacToe</h1>
-            <h2>player {turn}'s turn</h2>
-            <div className="Scoreboard">
-              <span>X: {xscore}</span>
-              <span>O: {oscore}</span>
-            </div>
-            {/* created a new array of Squares Component
+      <MainNavigation />
+      <h3>this is the room {roomId}</h3>
+      {!user && <Navigate to="/" replace={true} />}
+      <div className="game-container">
+        <h1>Let's Play TicTacToe</h1>
+        <h2>player {turn}'s turn</h2>
+        <div className="Scoreboard">
+          <span>X: {xscore}</span>
+          <span>O: {oscore}</span>
+        </div>
+        {/* created a new array of Squares Component
          using the map() and the created array earlier ---> const [squares, setSquares] = useState(new Array(9).fill(null));*/}
-            {/* the x and o props determines if the square is x or o */}
-            <Board>
-              {squares.map((square, index) => (
-                <Squares
-                  key={index}
-                  x={square === "x" ? 1 : 0}
-                  o={square === "o" ? 1 : 0}
-                  onClick={() => ClickHandler(index)}
-                />
-              ))}
-              {winner && (
-                <div className="round-over">
-                  <h5>Player {winner} Won the Game</h5>
-                  <button
-                    className="restart-button"
-                    onClick={() => restartHandler()}
-                  >
-                    Play Again
-                  </button>
-                </div>
-              )}
-              {draw && !winner && (
-                <div className="round-over">
-                  <h5>It's a Draw</h5>
-                  <button
-                    className="restart-button"
-                    onClick={() => restartHandler()}
-                  >
-                    Play Again
-                  </button>
-                </div>
-              )}
-            </Board>
-          </div>
-        </>
-      ) : (
-        <LoginForm />
-      )}
+        {/* the x and o props determines if the square is x or o */}
+        <Board>
+          {squares.map((square, index) => (
+            <Squares
+              key={index}
+              x={square === "x" ? 1 : 0}
+              o={square === "o" ? 1 : 0}
+              onClick={() => ClickHandler(index)}
+            />
+          ))}
+          {winner && (
+            <div className="round-over">
+              <h5>Player {winner} Won the Game</h5>
+              <button
+                className="restart-button"
+                onClick={() => restartHandler()}
+              >
+                Play Again
+              </button>
+            </div>
+          )}
+          {draw && !winner && (
+            <div className="round-over">
+              <h5>It's a Draw</h5>
+              <button
+                className="restart-button"
+                onClick={() => restartHandler()}
+              >
+                Play Again
+              </button>
+            </div>
+          )}
+        </Board>
+      </div>
     </>
   );
 }
