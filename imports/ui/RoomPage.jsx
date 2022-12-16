@@ -10,7 +10,7 @@ function RoomPage() {
   const user = useTracker(() => Meteor.userId());
 
   const rooms = useTracker(() => {
-    Meteor.subscribe("rooms");
+    Meteor.subscribe("rooms.getRooms");
     return RoomsCollection.find().fetch();
   });
 

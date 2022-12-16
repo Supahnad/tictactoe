@@ -12,9 +12,6 @@ function HomePage(props) {
   const [roomId, setRoomId] = useState("");
   let navigate = useNavigate();
 
-  // useEffect(() => {
-  //   console.log("props -> ", props);
-  // }, []);
 
   const logout = (e) => {
     e.preventDefault();

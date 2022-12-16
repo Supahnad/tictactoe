@@ -10,6 +10,7 @@ function roomCreate() {
   return (
     <>
       <header>
+        <Link to="/Home">TicTacToe</Link>
         <button onClick={logout} className="logout-btn" >
           Log out
         </button>
