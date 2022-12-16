@@ -15,44 +15,66 @@ Meteor.methods({
       createdAt: new Date(),
       player1Id: this.userId,
       player2Id: null,
-      status: "waiting",
+      squares: new Array(9).fill(null),
+      xScore: 0,
+      oScore: 0,
     });
 
     return roomId;
   },
 
-  "insert.player2"(roomId) {
+  "insert.player"(roomId) {
     check(roomId, String);
 
     if (!this.userId) {
       throw new Meteor.Error("Not authorized.");
     }
 
-    // const player1 = RoomsCollection.find(
-    //   { _id: roomId },
-    //   { fields: { player1Id: 1 } }
-    // );
+    const room = RoomsCollection.findOne({ _id: roomId });
 
-    // if (this.userId === player1) {
-    //   throw new Meteor.Error("This is your Created Room");
-    // }
+    if (room.player1Id === this.userId) {
+      return room.player1Id;
+    }
+    if (room.player2Id === this.userId) {
+      return room.player2Id;
+    }
+    if (room.player2Id === null) {
+      RoomsCollection.update(
+        { _id: roomId },
+        { $set: { player2Id: this.userId } }
+      );
+      return room.player2Id;
+    }
+    if (room.player1Id !== null && room.player2Id !== null) {
+      if (room.player1Id !== this.userId || room.player2Id !== this.userId) {
+        throw new Meteor.Error("Room Is Full.");
+      }
+    }
+  },
+
+  "player1Leave"(roomId) {
+    check(roomId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
 
     RoomsCollection.update(
       { _id: roomId },
-      { $set: { player2Id: this.userId } }
+      { $set: { player1Id: null } }
     );
   },
 
-  // "getPlayer1"(player2Id) {
-  //   check(player2Id, String);
+  "player2Leave"(roomId) {
+    check(roomId, String);
 
-  //   if (!this.userId) {
-  //     throw new Meteor.Error("Not authorized.");
-  //   }
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
 
-  //   const player2 = RoomsCollection.findOne({ player2Id });
-
-  //   if(player2 === null)
-  //   throw new Meteor.Error("Waiting for opponent.");
-  // },
+    RoomsCollection.update(
+      { _id: roomId },
+      { $set: { player2Id: null } }
+    );
+  },
 });
