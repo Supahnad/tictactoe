@@ -52,6 +52,44 @@ Meteor.methods({
     }
   },
 
+  "insert.player.v2"(roomId) {
+    check(roomId, String);
+
+    if (!this.userId) {
+      return {
+        status: 'error',
+        message: 'User not logged in',
+      }
+    } else {
+      const room = RoomsCollection.findOne({ _id: roomId });
+      const {player1Id, player2Id} = room;
+      const isRoomCreator = player1Id === this.userId;
+      const isChallenger = player2Id === this.userId;
+      const isNotChallenger = player2Id !== this.userId;
+      if (isRoomCreator || isChallenger) { // If user is already player 1 or player 2
+        return {
+          status: 'success',
+        }
+      } else  {
+        if (!player2Id) { // Join room if no player 2 yet
+          RoomsCollection.update(
+              { _id: roomId },
+              { $set: { player2Id: this.userId } }
+          );
+          return {
+            status: 'success',
+          }
+        }
+        if (isNotChallenger) {
+          return {
+            status: 'error',
+            message: 'Room is full',
+          }
+        }
+      }
+    }
+  },
+
   "player1Leave"(roomId) {
     check(roomId, String);
 

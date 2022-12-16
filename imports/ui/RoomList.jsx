@@ -9,11 +9,11 @@ function RoomList({ room }) {
   let navigate = useNavigate();
 
   const onClick = () => {
-    Meteor.call("insert.player", room._id, (err, res) => {
-      if (res === user) {
+    Meteor.call("insert.player.v2", room._id, (err, res) => {
+      if (res.status === 'success') {
         navigate(`/TicTacToe/${room._id}`);
-      } else if (err) {
-        console.log(err);
+      } else {
+        alert(res.message);
       }
     });
   };
