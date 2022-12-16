@@ -39,6 +39,7 @@ Meteor.methods({
       return room.player2Id;
     }
     if (room.player2Id === null) {
+      console.log("3")
       RoomsCollection.update(
         { _id: roomId },
         { $set: { player2Id: this.userId } }
@@ -79,8 +80,7 @@ Meteor.methods({
           return {
             status: 'success',
           }
-        }
-        if (isNotChallenger) {
+        } else {
           return {
             status: 'error',
             message: 'Room is full',
