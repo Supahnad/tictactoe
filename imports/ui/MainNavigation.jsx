@@ -4,17 +4,20 @@ import { Route, Routes, Link } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
 
 function roomCreate() {
-
-    const logout = () => Meteor.logout();
+  const logout = () => Meteor.logout();
 
   return (
     <>
-      <header>
-        <Link to="/Home">TicTacToe</Link>
-        <button onClick={logout} className="logout-btn" >
-          Log out
-        </button>
-      </header>
+      <div className="Mainheader">
+        <header className="header-container">
+          <Link className="Logo" to="/Home">
+            Tic Tac Toe
+          </Link>
+          <button onClick={logout} className="logout-btn">
+            <span>Log out</span>
+          </button>
+        </header>
+      </div>
     </>
   );
 }

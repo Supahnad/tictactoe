@@ -7,11 +7,22 @@ import { RoomsCollection } from "../db/RoomsCollection";
 import RoomList from "./RoomList.jsx";
 
 function HomePage(props) {
+  const currentUser = useTracker(() => Meteor.user());
   const user = useTracker(() => Meteor.userId());
   const [roomName, setRoomName] = useState("");
   const [roomId, setRoomId] = useState("");
+  const [fName, setfName] = useState();
+  const [lName, setlName] = useState();
   let navigate = useNavigate();
 
+  const checkForUser = () => {
+    if (currentUser) {
+      setfName(currentUser.profile.firstName);
+      setlName(currentUser.profile.lastName);
+    } else {
+      console.log("not logged in");
+    }
+  };
 
   const logout = (e) => {
     e.preventDefault();
@@ -34,10 +45,20 @@ function HomePage(props) {
     setRoomName("");
   };
 
+  useEffect(() => {
+    checkForUser();
+  });
+
   return (
     <div>
       <MainNavigation />
-      {/* {roomId && <Navigate to={`/TicTacToe/${roomId}`} replace={true} />} */}
+      {
+        <div className="nameOfUser">
+          <h3>
+            Welcome {fName} {lName} !
+          </h3>
+        </div>
+      }
       {!user && <Navigate to="/" replace={true} />}
       <div className="room-container">
         <form className="room-form" onSubmit={submitHandler}>
@@ -52,12 +73,9 @@ function HomePage(props) {
             <button type="submit">Create room</button>
           </div>
         </form>
-
-        <button type="submit">
-          <Link className="login-btn" to="/RoomLists">
-            Room lists
-          </Link>
-        </button>
+        <Link className="roomlist-btn" to="/RoomLists">
+          Room lists
+        </Link>
       </div>
     </div>
   );

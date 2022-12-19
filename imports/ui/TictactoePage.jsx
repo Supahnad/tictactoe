@@ -95,30 +95,11 @@ function TicTacToePage() {
   };
 
   const ClickHandler = (index) => {
-    const newSquares = squares;
-    if (turn === "x") {
-      //checks if the index has a value
-      if (newSquares[index] !== null) {
-        console.log("box has a value");
-      } else {
-        newSquares[index] = "x";
-        console.log("Player X Clicked");
-        setSquares([...newSquares]);
-        setTurn("o");
+    Meteor.call("place.move", roomId, index, turn, (err, res) => {
+      if(res.status === "error"){
+        console.log(message);
       }
-    }
-    if (turn === "o") {
-      //checks if the index has a value
-      if (newSquares[index] !== null) {
-        console.log("box has a value");
-      } else {
-        newSquares[index] = "o";
-        console.log("Player O Clicked");
-        setSquares([...newSquares]);
-        setTurn("x");
-      }
-    }
-    checkForWinner(squares);
+    });
   };
 
   const restartHandler = () => {
@@ -129,19 +110,23 @@ function TicTacToePage() {
   };
 
   const playerLeaveHandler = () => {
-    if (roomData.player1Id === user) {
-      Meteor.call("player1Leave", roomId);
-    } else if (roomData.player2Id === user) {
+    if (roomData.player2Id === user) {
       Meteor.call("player2Leave", roomId);
     }
-    navigate(`/Home`)
+    navigate(`/Home`);
   };
 
   return (
     <>
       <MainNavigation />
       {!user && <Navigate to="/" replace={true} />}
-      <button onClick={playerLeaveHandler}>Leave Room</button>
+      <div className="leave-btn">
+        {roomData.player2Id === user ? (
+          <button onClick={playerLeaveHandler}>Leave Room</button>
+        ) : (
+          <button onClick={() => navigate(`/Home`)}>Go back</button>
+        )}
+      </div>
       {isWaiting ? (
         <h1>Waiting for opponent</h1>
       ) : (

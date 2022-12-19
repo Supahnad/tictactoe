@@ -15,6 +15,29 @@ body > div > .game-container {
   text-align: center;
   align-items: center;
 }
+.leave-btn {
+  display: flex;
+  justify-content: center;
+}
+.leave-btn > button {
+  display: flex;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: aliceblue;
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
+.leave-btn > button:hover {
+  background-color: #2c84be;
+  color: rgba(240, 248, 255, 0.925);
+}
+.leave-btn > button:active {
+  background-color: #2876aa;
+  color: rgb(213, 221, 199);
+}
 
 p {
   margin: 0;
@@ -94,12 +117,62 @@ h5 {
   width: fit-content;
   box-sizing: border-box;
 }
-span {
+.Scoreboard > span {
   border: 1px solid #000;
   padding: 10px;
   font-weight: bold;
 }
 
+/* header style */
+
+.Mainheader {
+  margin-bottom: 10px;
+}
+
+.header-container {
+  background-color: #57abe4;
+  overflow: hidden;
+}
+.Logo {
+  padding: 15px 15px;
+  color: aliceblue;
+  font-size: large;   
+  font-weight: 1000;
+  text-decoration: none;
+  float: left;
+}
+
+.Logo:hover {
+  background-color: #4893c5;
+}
+
+.Logo:active {
+  background-color: #3882b3;
+}
+
+.logout-btn {
+  font-size: large;
+  color: aliceblue;
+  background: none;
+  cursor: pointer;
+  border: none;
+  padding: 15px 15px;
+  float: right;
+}
+
+.logout-btn > span{
+  font-weight: 1000;
+}
+
+.logout-btn:hover {
+  background-color: #4893c5;
+}
+
+.logout-btn:active {
+  background-color: #3882b3;
+}
+
+/* login page style */
 .login-form > div {
   margin: 8px;
 }
@@ -133,6 +206,8 @@ span {
   border: none;
   border-radius: 15px;
 }
+
+/* register page style */
 .reg-btn {
   position: relative;
   display: inline-block;
@@ -179,26 +254,6 @@ span {
   border: none;
   border-radius: 15px;
 }
-.logout-btn {
-  position: relative;
-  display: flex;
-  padding: 0;
-  margin: 0;
-  align-items: baseline;
-  font-size: large;
-  color: aliceblue;
-  background: none;
-  cursor: pointer;
-  border: none;
-}
-
-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  background-color: #57abe4;
-  padding: 20px 15px;
-}
 
 .register-btn {
   display: flex;
@@ -208,8 +263,31 @@ header {
   align-items: center;
 }
 
-.login-btn {
+/* roomlist page style */
+.roomlist-btn {
+  position: relative;
+  display: inline-block;
+  padding: 15px 25px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
   color: aliceblue;
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+  text-decoration: none;
+}
+
+.roomlist-btn:hover {
+  color: rgb(213, 221, 199);
+  background-color: #2c84be;
+}
+
+.roomlist-btn:active {
+  color: rgb(213, 221, 199);
+  background-color: #215e86;
 }
 
 .room-container {
@@ -281,12 +359,11 @@ header {
   margin: 8px;
 }
 
-.roomNames {
+.rooms {
+  display: inline-block;
+  padding: 0;
+  margin: 20px;
   position: relative;
-  padding: 20px 30px;
-  margin: 20px 20px;
-  font-size: 1rem;
-  cursor: pointer;
   text-align: center;
   outline: none;
   color: aliceblue;
@@ -294,7 +371,27 @@ header {
   border: none;
   border-radius: 15px;
 }
-
+.remove-room {
+  bottom: 80px;
+  right: 5px;
+  position: absolute;
+  color: #ff3046;
+  border: none;
+  cursor: pointer;
+  background: none;
+  font-weight: bolder;
+  font-size: 30px;
+}
+.roomNames {
+  padding: 30px 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  color: aliceblue;
+  background-color: #3193d4;
+  border: none;
+  border-radius: 15px;
+}
 .roomNames:hover {
   color: rgb(213, 221, 199);
   background-color: #2c84be;
@@ -308,14 +405,22 @@ header {
 }
 .roomlists > a {
   margin-top: 10px;
-  margin-right: 10px;
+  margin-left: 10px;
   color: rgb(19, 17, 17);
   display: flex;
-  justify-content: flex-end;
   text-decoration: none;
 }
 .roomlists > h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* home page style */
+.nameOfUser {
+  display: flex;
+  justify-content: center;
+}
+.nameOfUser > h3 {
+  font-family: "Lucida Console";
 }
