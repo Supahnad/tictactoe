@@ -13,12 +13,14 @@ function HomePage(props) {
   const [roomId, setRoomId] = useState("");
   const [fName, setfName] = useState();
   const [lName, setlName] = useState();
+  const [username, setUsername] = useState();
   let navigate = useNavigate();
 
   const checkForUser = () => {
     if (currentUser) {
       setfName(currentUser.profile.firstName);
       setlName(currentUser.profile.lastName);
+      setUsername(currentUser.username);
     } else {
       console.log("not logged in");
     }
@@ -33,12 +35,11 @@ function HomePage(props) {
     event.preventDefault();
     if (!roomName) return;
 
-    Meteor.call("createRoom", roomName, (err, res) => {
+    Meteor.call("createRoom", roomName, username, (err, res) => {
       if (err) {
         console.log(err);
       } else {
         setRoomId(res);
-        Meteor.subscribe("roomData", roomId);
         navigate(`/TicTacToe/${res}`);
       }
     });

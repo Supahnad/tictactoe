@@ -6,18 +6,20 @@ import { useNavigate } from "react-router-dom";
 import MainNavigation from "./MainNavigation";
 
 function RoomList({ room }) {
+  const player2 = useTracker(() => Meteor.user());
   const user = useTracker(() => Meteor.userId());
+  const [username, setUsername] = useState();
   const [isCreator, setIsCreator] = useState(false);
   let navigate = useNavigate();
 
-  const checkIfRoomCreator = () => {
+  const checkForUsers = () => {
     if (room.player1Id === user) {
-      setIsCreator(true)
+      setIsCreator(true);
     }
   };
 
   const onClick = () => {
-    Meteor.call("insert.player", room._id, (err, res) => {
+    Meteor.call("insert.player", room._id, player2.username, (err, res) => {
       if (res.status === "success") {
         navigate(`/TicTacToe/${room._id}`);
       } else {
@@ -31,7 +33,7 @@ function RoomList({ room }) {
   };
 
   useEffect(() => {
-    checkIfRoomCreator();
+    checkForUsers();
   }, []);
 
   return (
