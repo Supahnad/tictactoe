@@ -20,6 +20,10 @@ function TicTacToePage() {
     return { roomData };
   });
 
+  useEffect(() => {
+    roomData && checkForWinner(roomData.squares);
+  }, [roomData]);
+
   // const [squares, setSquares] = useState([]);
   const [turn, setTurn] = useState();
   const [winner, setWinner] = useState();
@@ -70,7 +74,7 @@ function TicTacToePage() {
       ) {
         setWinner(square[a]);
         if (square[a] === "x") {
-          // Meteor.call("set.Score", roomId)
+          Meteor.call("set.Score", roomId)
           console.log("player 1 wins")
         } else if (square[a] === "o") {
           console.log("player 2 wins")
@@ -99,11 +103,11 @@ function TicTacToePage() {
       if (res.status === "success") {
         console.log("response ",res.response)
         console.log("winner ",res.winner)
-        checkForWinner(roomData.squares);
+        // checkForWinner(roomData.squares);
       } else {
         alert(res.message);
       }
-    }); 
+    });
   };
 
   const restartHandler = () => {
