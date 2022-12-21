@@ -20,7 +20,7 @@ function TicTacToePage() {
     return { roomData };
   });
 
-  const [squares, setSquares] = useState([]);
+  // const [squares, setSquares] = useState([]);
   const [turn, setTurn] = useState();
   const [winner, setWinner] = useState();
   const [win, setWin] = useState();
@@ -32,11 +32,11 @@ function TicTacToePage() {
 
   const checkForPlayer = () => {
       if (roomData.player2Id !== null) {
-        console.log("Ready to Play ");
+        // console.log("Ready to Play ");
         setPlayer2(roomData.player2Id);
         setIsWaiting(false);
       } else {
-        console.log("waiting for Opponent ");
+        // console.log("waiting for Opponent ");
         setIsWaiting(true);
       }
   };
@@ -95,10 +95,11 @@ function TicTacToePage() {
   };
 
   const ClickHandler = (index) => {
-    Meteor.call("place.move", roomId, index, (err, res) => {
+    Meteor.call("place.move", roomId, index, roomData.squares, (err, res) => {
       if (res.status === "success") {
-        console.log(res.response)
-        checkForWinner(res.response);
+        console.log("response ",res.response)
+        console.log("winner ",res.winner)
+        checkForWinner(roomData.squares);
       } else {
         alert(res.message);
       }
@@ -107,7 +108,6 @@ function TicTacToePage() {
 
   const restartHandler = () => {
     setWinner(null);
-    setSquares(new Array(9).fill(null));
     setTurn("x");
     setDraw(false);
   };

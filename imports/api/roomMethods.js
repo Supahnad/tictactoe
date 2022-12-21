@@ -24,7 +24,7 @@ Meteor.methods({
       oScore: 0,
       winner: false,
       draw: false,
-      move: 'x',
+      move: "x",
     });
 
     return roomId;
@@ -54,7 +54,7 @@ Meteor.methods({
           // Join room if no player 2 yet
           RoomsCollection.update(
             { _id: roomId },
-            { $set: { player2Id: this.userId, player2Username: username, } }
+            { $set: { player2Id: this.userId, player2Username: username } }
           );
           return {
             status: "success",
@@ -69,7 +69,7 @@ Meteor.methods({
     }
   },
 
-  "place.move"(roomId, Index) {
+  "place.move"(roomId, Index, square) {
     check(roomId, String);
     check(Index, Number);
 
@@ -80,19 +80,75 @@ Meteor.methods({
     const room = RoomsCollection.findOne({ _id: roomId });
     const isPlayerTurn = room.turn === this.userId;
     const changePlayer = room.turn === room.player1Id ? room.player2Id : room.player1Id;
-    const changeLetter = room.turn === room.player1Id ? "x" : "o";
-    
+    const letter = room.turn === room.player1Id ? "x" : "o";
+    const hasWinner = room.winner;
+
+      // let patterns = [
+      //   [0, 1, 2],
+      //   [3, 4, 5],
+      //   [6, 7, 8],
+      //   [0, 3, 6],
+      //   [1, 4, 7],
+      //   [2, 5, 8],
+      //   [0, 4, 8],
+      //   [2, 4, 6],
+      // ];
+
+      // const boxFull = room.squares.every((square) => {
+      //   if (square !== null) {
+      //     return square;
+      //   }
+      // });
+
     if (isPlayerTurn) {
       if (room.squares[Index] === null) {
         RoomsCollection.update(
           { _id: roomId },
           {
             $set: {
-              ["squares." + Index]: changeLetter,
+              ["squares." + Index]: letter,
               turn: changePlayer,
             },
           }
         );
+        // for (let i = 0; i < patterns.length; i++) {
+        //   const [a, b, c] = patterns[i];
+        //   if (
+        //     square[a] &&
+        //     square[a] === square[b] &&
+        //     square[b] === square[c] &&
+        //     !boxFull
+        //   ) {
+        //     if (square[a] === "x") {
+        //       RoomsCollection.update(
+        //         { _id: roomId },
+        //         {
+        //           $set: {
+        //             winner: true,
+        //           },
+        //         }
+        //       );
+        //       return {
+        //         status: "success",
+        //         winner: "player 1 wins",
+        //       };
+        //     } else if (square[a] === "o") {
+        //       RoomsCollection.update(
+        //         { _id: roomId },
+        //         {
+        //           $set: {
+        //             winner: true,
+        //           },
+        //         }
+        //       );
+        //       return {
+        //         status: "success",
+        //         winner: "player 2 wins",
+        //       };
+        //     }
+        //   }
+        // }
+        
         return {
           status: "success",
           response: room.squares,
@@ -109,9 +165,6 @@ Meteor.methods({
         message: "its not your turn",
       };
     }
-
-    
-
   },
 
   "deleteRoom"(roomId) {
@@ -142,12 +195,11 @@ Meteor.methods({
     }
 
     const room = RoomsCollection.findOne({ _id: roomId });
-    const currentScore = room.xScore;
-    const updatedScore = currentScore + 1;
+    // const currentScore = room.xScore;
+    // const updatedScore = currentScore + 1;
 
-    RoomsCollection.update({ _id: roomId }, { $set: { xScore: updatedScore } });
+    RoomsCollection.update({ _id: roomId }, { $set: { xScore: 1, squares: new Array(9).fill(null), winner: false } });
   },
-
 
   // "reset.Game"(roomId) {
   //   check(roomId, String);
@@ -158,7 +210,6 @@ Meteor.methods({
 
   //   const room = RoomsCollection.findOne({ _id: roomId });
 
-  //   RoomsCollection.update({ _id: roomId }, { $set: { squares: new Array(9).fill(null) } });
+  //   RoomsCollection.update({ _id: roomId }, { $set: { squares: new Array(9).fill(null), winner: false, draw: false } });
   // },
-
 });
