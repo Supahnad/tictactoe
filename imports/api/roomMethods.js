@@ -195,10 +195,10 @@ Meteor.methods({
     }
 
     const room = RoomsCollection.findOne({ _id: roomId });
-    // const currentScore = room.xScore;
-    // const updatedScore = currentScore + 1;
+    const currentScore = room.xScore;
+    const updatedScore = currentScore + 1;
 
-    RoomsCollection.update({ _id: roomId }, { $set: { xScore: 1, squares: new Array(9).fill(null), winner: false } });
+    RoomsCollection.update({ _id: roomId }, { $set: { xScore: updatedScore, squares: new Array(9).fill(null), winner: false } });
   },
 
   // "reset.Game"(roomId) {

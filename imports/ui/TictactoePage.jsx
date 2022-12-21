@@ -13,12 +13,20 @@ function TicTacToePage() {
   const user = useTracker(() => Meteor.userId());
   const logout = () => Meteor.logout();
   let navigate = useNavigate();
+  const [isChecking, setIsChecking] = useState(true);
 
   const { roomData } = useTracker(() => {
     Meteor.subscribe("rooms.getRoom", roomId);
     const roomData = RoomsCollection.findOne({ _id: roomId });
     return { roomData };
   });
+
+  useEffect(() => {
+    console.log("checking... ",isChecking)
+    if(isChecking === true){
+    roomData && checkForWinner(roomData.squares);
+  }
+  }, [roomData]);
 
   // const [squares, setSquares] = useState([]);
   const [turn, setTurn] = useState();
@@ -42,6 +50,7 @@ function TicTacToePage() {
   };
 
   const checkForWinner = (square, index) => {
+    console.log("2nd checking... ",isChecking)
     let patterns = [
       [0, 1, 2],
       [3, 4, 5],
@@ -70,7 +79,7 @@ function TicTacToePage() {
       ) {
         setWinner(square[a]);
         if (square[a] === "x") {
-          // Meteor.call("set.Score", roomId)
+          Meteor.call("set.Score", roomId)
           console.log("player 1 wins")
         } else if (square[a] === "o") {
           console.log("player 2 wins")
@@ -92,18 +101,19 @@ function TicTacToePage() {
         }
       }
     }
+    setIsChecking(false);
+    console.log("3rd checking... ",isChecking)
   };
 
   const ClickHandler = (index) => {
+    setIsChecking(true);
     Meteor.call("place.move", roomId, index, roomData.squares, (err, res) => {
       if (res.status === "success") {
-        console.log("response ",res.response)
-        console.log("winner ",res.winner)
-        checkForWinner(roomData.squares);
+        // console.log("response ",res.response)
       } else {
         alert(res.message);
       }
-    }); 
+    });
   };
 
   const restartHandler = () => {
