@@ -55,7 +55,6 @@ function TicTacToePage() {
   };
 
   const checkForWinner = (squares, index) => {
-    console.log("check")
     let patterns = [
       [0, 1, 2],
       [3, 4, 5],
@@ -87,7 +86,7 @@ function TicTacToePage() {
           status = 'p1';
           // Meteor.call("set.Score", roomId);
           // console.log("player 1 wins");
-          return true;
+          // return true;
         } else if (squares[a] === "o") {
           status = 'p2';
           // console.log("player 2 wins");
@@ -118,9 +117,9 @@ function TicTacToePage() {
     } else if (status === 'draw') {
       console.log("draw");
     }
-    setIsChecking(false);
+    // setIsChecking(false);
     // console.log("checking after setting to false ", isChecking);
-    return false;
+    // return false;
   };
 
   const ClickHandler = (index) => {
