@@ -32,18 +32,14 @@ function TicTacToePage() {
 
 
   useEffect(() => {
-    if (roomData) {
-      // console.log("checking... ", isChecking);
-      if(isChecking){
-        console.log("roomoData ==>", roomData.squares);
-        console.log("checkForWinner function returns  ",checkForWinner(roomData.squares));
-        checkForWinner(roomData.squares)
+    if (roomData && isWaiting) {
+      if (isWaiting) {
+        checkForPlayer();
+        setxScore(roomData.xScore);
+        setoScore(roomData.oScore);
+      } else {
+        checkForWinner(roomData.squares);
       }
-      checkForPlayer();
-      setxScore(roomData.xScore);
-      setoScore(roomData.oScore);
-    } else {
-      console.log("waiting for roomoData..");
     }
   }, [roomData]);
 
@@ -58,7 +54,7 @@ function TicTacToePage() {
     }
   };
 
-  const checkForWinner = (square, index) => {
+  const checkForWinner = (squares, index) => {
     let patterns = [
       [0, 1, 2],
       [3, 4, 5],
@@ -70,31 +66,35 @@ function TicTacToePage() {
       [2, 4, 6],
     ];
 
-    const boxFull = roomData.squares.every((square) => {
+    const boxFull = squares.every((square) => {
       if (square !== null) {
         return square;
       }
     });
-
+    let status = '';
     for (let i = 0; i < patterns.length; i++) {
       const [a, b, c] = patterns[i];
 
       if (
-        square[a] &&
-        square[a] === square[b] &&
-        square[b] === square[c] &&
+          squares[a] &&
+          squares[a] === squares[b] &&
+          squares[b] === squares[c] &&
         !boxFull
       ) {
-        setWinner(square[a]);
-        if (square[a] === "x") {
+        // setWinner(squares[a]);
+        if (squares[a] === "x") {
+          status = 'p1';
           // Meteor.call("set.Score", roomId);
-          console.log("player 1 wins");
+          // console.log("player 1 wins");
           return true;
-        } else if (square[a] === "o") {
-          console.log("player 2 wins");
+        } else if (squares[a] === "o") {
+          status = 'p2';
+          // console.log("player 2 wins");
           // setoScore(oscore + 1);
         }
       }
+      // setxScore(roomData.xScore);
+      // setoScore(roomData.oScore);
 
       // if (boxFull === true) {
       //   if (square[a] && square[a] === square[b] && square[b] === square[c]) {
@@ -110,6 +110,13 @@ function TicTacToePage() {
       //   }
       // }
     }
+    if (status === 'p1') {
+      console.log("p1 wins!");
+    } else if (status === 'p2') {
+      console.log("p2 wins!");
+    } else if (status === 'draw') {
+      console.log("draw");
+    }
     setIsChecking(false);
     // console.log("checking after setting to false ", isChecking);
     return false;
@@ -118,7 +125,7 @@ function TicTacToePage() {
   const ClickHandler = (index) => {
 
     setIsChecking(true);
-    
+
     Meteor.call("place.move", roomId, index, roomData.squares, (err, res) => {
       if (res.status === "success") {
         // console.log("response ",res.response)
