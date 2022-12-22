@@ -79,26 +79,26 @@ Meteor.methods({
 
     const room = RoomsCollection.findOne({ _id: roomId });
     const isPlayerTurn = room.turn === this.userId;
-    const changePlayer = room.turn === room.player1Id ? room.player2Id : room.player1Id;
+    const changePlayer =
+      room.turn === room.player1Id ? room.player2Id : room.player1Id;
     const letter = room.turn === room.player1Id ? "x" : "o";
-    const hasWinner = room.winner;
 
-      // let patterns = [
-      //   [0, 1, 2],
-      //   [3, 4, 5],
-      //   [6, 7, 8],
-      //   [0, 3, 6],
-      //   [1, 4, 7],
-      //   [2, 5, 8],
-      //   [0, 4, 8],
-      //   [2, 4, 6],
-      // ];
+    // let patterns = [
+    //   [0, 1, 2],
+    //   [3, 4, 5],
+    //   [6, 7, 8],
+    //   [0, 3, 6],
+    //   [1, 4, 7],
+    //   [2, 5, 8],
+    //   [0, 4, 8],
+    //   [2, 4, 6],
+    // ];
 
-      // const boxFull = room.squares.every((square) => {
-      //   if (square !== null) {
-      //     return square;
-      //   }
-      // });
+    // const boxFull = room.squares.every((square) => {
+    //   if (square !== null) {
+    //     return square;
+    //   }
+    // });
 
     if (isPlayerTurn) {
       if (room.squares[Index] === null) {
@@ -148,7 +148,7 @@ Meteor.methods({
         //     }
         //   }
         // }
-        
+
         return {
           status: "success",
           response: room.squares,
@@ -195,21 +195,38 @@ Meteor.methods({
     }
 
     const room = RoomsCollection.findOne({ _id: roomId });
-    // const currentScore = room.xScore;
-    // const updatedScore = currentScore + 1;
+    const currentScore = room.xScore;
+    const updatedScore = currentScore + 1;
 
-    RoomsCollection.update({ _id: roomId }, { $set: { xScore: 1, squares: new Array(9).fill(null), winner: false } });
+    RoomsCollection.update(
+      { _id: roomId },
+      {
+        $set: {
+          xScore: updatedScore,
+        },
+      }
+    );
   },
 
-  // "reset.Game"(roomId) {
-  //   check(roomId, String);
+  "reset.Game"(roomId) {
+    check(roomId, String);
 
-  //   if (!this.userId) {
-  //     throw new Meteor.Error("Not authorized.");
-  //   }
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
 
-  //   const room = RoomsCollection.findOne({ _id: roomId });
+    const room = RoomsCollection.findOne({ _id: roomId });
 
-  //   RoomsCollection.update({ _id: roomId }, { $set: { squares: new Array(9).fill(null), winner: false, draw: false } });
-  // },
+    RoomsCollection.update(
+      { _id: roomId },
+      {
+        $set: {
+          squares: new Array(9).fill(null),
+          winner: false,
+          draw: false,
+          turn: room.player1Id,
+        },
+      }
+    );
+  },
 });
