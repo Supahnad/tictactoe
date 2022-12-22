@@ -32,7 +32,7 @@ function TicTacToePage() {
 
 
   useEffect(() => {
-    if (roomData && isWaiting) {
+    if (roomData) {
       if (isWaiting) {
         checkForPlayer();
         setxScore(roomData.xScore);
@@ -55,6 +55,7 @@ function TicTacToePage() {
   };
 
   const checkForWinner = (squares, index) => {
+    console.log("check")
     let patterns = [
       [0, 1, 2],
       [3, 4, 5],
