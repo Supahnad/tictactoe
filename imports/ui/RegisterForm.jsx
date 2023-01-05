@@ -1,10 +1,12 @@
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Accounts } from "meteor/accounts-base";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import LoginForm from "./LoginForm";
 
 function RegisterForm() {
+  let navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -28,6 +30,7 @@ function RegisterForm() {
     setEmail("");
     setFname("");
     setLname("");
+    navigate("/");
   };
 
   return (

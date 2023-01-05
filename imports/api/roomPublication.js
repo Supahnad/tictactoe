@@ -1,13 +1,10 @@
 import { Meteor } from "meteor/meteor";
 import { RoomsCollection } from "../db/RoomsCollection";
 
-Meteor.publish("rooms", function publishRooms() {
-  return RoomsCollection.find({ userId: this.userId });
+Meteor.publish("rooms.getRooms", function publishRooms() {
+  return RoomsCollection.find();
 });
 
-Meteor.publish("roomData", function findPlayer(playerId) {
-  return RoomsCollection.find({ player1Id: playerId });
+Meteor.publish("rooms.getRoom", function findPlayer(roomId) {
+  return RoomsCollection.find({ _id: roomId });
 });
-// Meteor.publish("roomDataAll", function roomCreate(roomId) {
-//   return RoomsCollection.find({ _id: roomId });
-// });

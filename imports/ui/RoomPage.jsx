@@ -10,7 +10,7 @@ function RoomPage() {
   const user = useTracker(() => Meteor.userId());
 
   const rooms = useTracker(() => {
-    Meteor.subscribe("rooms");
+    Meteor.subscribe("rooms.getRooms");
     return RoomsCollection.find().fetch();
   });
 
@@ -20,10 +20,10 @@ function RoomPage() {
       <MainNavigation />
       {!user && <Navigate to="/" replace={true} />}
       <div className="roomlists">
-        <Link to="/Home"> Go back</Link>
+        <Link to="/Home"> &larr; Go back</Link>
         <h1>Room Lists</h1>
       </div>
-      <div>
+      <div className="roomlist-wrapper">
         {rooms.map((room) => (
           <RoomList key={room._id} room={room} />
         ))}
