@@ -40,8 +40,9 @@ function RoomList({ room }) {
     <>
       <div className="rooms">
         <div className="roomNames" onClick={onClick}>
-          <p>Room Name</p>
-          <p>{room.name}</p>
+          <p>Room Name: {room.name}</p>
+          <p>Room Creator: {room.player1Username}</p>
+          <p>{room.player2Id === null ? <span>looking for opponent</span> : <span>Room is Full</span>}</p>
         </div>
         {isCreator && (
           <button className="remove-room" onClick={onDelete}>

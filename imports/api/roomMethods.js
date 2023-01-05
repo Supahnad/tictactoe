@@ -22,6 +22,7 @@ Meteor.methods({
       turn: this.userId,
       xScore: 0,
       oScore: 0,
+      rematch: 0,
       winner: false,
       draw: false,
       move: "x",
@@ -187,7 +188,7 @@ Meteor.methods({
     RoomsCollection.update({ _id: roomId }, { $set: { player2Id: null } });
   },
 
-  "set.Score"(roomId) {
+  "set.Score"(roomId, score, winner) {
     check(roomId, String);
 
     if (!this.userId) {
@@ -195,17 +196,49 @@ Meteor.methods({
     }
 
     const room = RoomsCollection.findOne({ _id: roomId });
-    const currentScore = room.xScore;
-    const updatedScore = currentScore + 1;
 
-    RoomsCollection.update(
-      { _id: roomId },
-      {
-        $set: {
-          xScore: updatedScore,
-        },
-      }
-    );
+    if (winner === room.player1Username) {
+      RoomsCollection.update(
+        { _id: roomId },
+        {
+          $set: {
+            xScore: score,
+            squares: new Array(9).fill(null),
+            winner: true,
+          },
+        }
+      );
+    } else if (winner === room.player2Username) {
+      RoomsCollection.update(
+        { _id: roomId },
+        {
+          $set: {
+            oScore: score,
+            squares: new Array(9).fill(null),
+            winner: true,
+          },
+        }
+      );
+    }
+  },
+  "game.Draw"(roomId) {
+    check(roomId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    const room = RoomsCollection.findOne({ _id: roomId });
+
+  RoomsCollection.update(
+        { _id: roomId },
+        {
+          $set: {
+            squares: new Array(9).fill(null),
+            draw: true,
+          },
+        }
+      );
   },
 
   "reset.Game"(roomId) {
@@ -217,16 +250,37 @@ Meteor.methods({
 
     const room = RoomsCollection.findOne({ _id: roomId });
 
-    RoomsCollection.update(
-      { _id: roomId },
-      {
-        $set: {
-          squares: new Array(9).fill(null),
-          winner: false,
-          draw: false,
-          turn: room.player1Id,
-        },
-      }
-    );
+    if (room.rematch !== 1) {
+      RoomsCollection.update(
+        { _id: roomId },
+        {
+          $inc: {
+            rematch: 1,
+          },
+        }
+      );
+      return {
+        status: "error",
+        message: "waiting for other player",
+        response: room.rematch,
+      };
+    } else if(room.rematch === 1) {
+      RoomsCollection.update(
+        { _id: roomId },
+        {
+          $set: {
+            squares: new Array(9).fill(null),
+            winner: false,
+            draw: false,
+            rematch: 0,
+            turn: room.player1Id,
+          },
+        }
+      );
+      return {
+        status: "success",
+        response: room.winner,
+      };
+    }
   },
 });

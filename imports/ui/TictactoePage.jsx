@@ -23,22 +23,29 @@ function TicTacToePage() {
 
   // const [squares, setSquares] = useState([]);
   const [turn, setTurn] = useState();
-  const [winner, setWinner] = useState();
+  const [playerWinner, setPlayerWinner] = useState();
+  const [isWinner, setIsWinner] = useState(false);
+  const [isDraw, setIsDraw] = useState(false);
   const [xscore, setxScore] = useState(0);
   const [oscore, setoScore] = useState(0);
-  const [draw, setDraw] = useState(false);
+  const [isClicked, setIsClicked] = useState();
   const [isWaiting, setIsWaiting] = useState(true);
   const [Player2, setPlayer2] = useState(null);
-
+  const [tempScore, setTempScore] = useState(0);
 
   useEffect(() => {
     if (roomData) {
       if (isWaiting) {
         checkForPlayer();
-        setxScore(roomData.xScore);
-        setoScore(roomData.oScore);
       } else {
         checkForWinner(roomData.squares);
+        setxScore(roomData.xScore);
+        setoScore(roomData.oScore);
+        setIsWinner(roomData.winner);
+        setIsDraw(roomData.draw);
+        if (isWinner === false && isDraw === false) {
+          setIsClicked(false);
+        }
       }
     }
   }, [roomData]);
@@ -71,30 +78,47 @@ function TicTacToePage() {
         return square;
       }
     });
-    let status = '';
+    let status = "";
+    // console.log("status ->", status);
     for (let i = 0; i < patterns.length; i++) {
       const [a, b, c] = patterns[i];
 
       if (
-          squares[a] &&
-          squares[a] === squares[b] &&
-          squares[b] === squares[c] &&
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[b] === squares[c] &&
         !boxFull
       ) {
-        // setWinner(squares[a]);
         if (squares[a] === "x") {
-          status = 'p1';
-          // Meteor.call("set.Score", roomId);
-          // console.log("player 1 wins");
-          // return true;
+          status = "p1";
+          setPlayerWinner(roomData.player1Username);
         } else if (squares[a] === "o") {
-          status = 'p2';
-          // console.log("player 2 wins");
-          // setoScore(oscore + 1);
+          status = "p2";
+          setPlayerWinner(roomData.player2Username);
         }
       }
-      // setxScore(roomData.xScore);
-      // setoScore(roomData.oScore);
+      if (boxFull === true) {
+        if (
+          squares[a] &&
+          squares[a] === squares[b] &&
+          squares[b] === squares[c]
+        ) {
+          if (squares[a] === "x") {
+            status = "p1";
+            setPlayerWinner(roomData.player1Username);
+          } else if (squares[a] === "o") {
+            status = "p2";
+            setPlayerWinner(roomData.player2Username);
+          }
+        }
+        if (
+          squares[a] !== squares[b] &&
+          squares[a] !== squares[c] &&
+          !isWinner
+        ) {
+          status = "draw";
+        }
+      }
 
       // if (boxFull === true) {
       //   if (square[a] && square[a] === square[b] && square[b] === square[c]) {
@@ -110,11 +134,16 @@ function TicTacToePage() {
       //   }
       // }
     }
-    if (status === 'p1') {
+    if (status === "p1") {
+      setTempScore(xscore + 1);
+      Meteor.call("set.Score", roomId, tempScore, playerWinner);
       console.log("p1 wins!");
-    } else if (status === 'p2') {
+    } else if (status === "p2") {
+      setTempScore(oscore + 1);
+      Meteor.call("set.Score", roomId, tempScore, playerWinner);
       console.log("p2 wins!");
-    } else if (status === 'draw') {
+    } else if (status === "draw") {
+      Meteor.call("game.Draw", roomId);
       console.log("draw");
     }
     // setIsChecking(false);
@@ -123,7 +152,6 @@ function TicTacToePage() {
   };
 
   const ClickHandler = (index) => {
-
     setIsChecking(true);
 
     Meteor.call("place.move", roomId, index, roomData.squares, (err, res) => {
@@ -136,10 +164,13 @@ function TicTacToePage() {
   };
 
   const restartHandler = () => {
-    Meteor.call("reset.Game", roomId);
-    setWinner(null);
-    setTurn("x");
-    setDraw(false);
+    Meteor.call("reset.Game", roomId, (err, res) => {
+      if (res.status === "error") {
+        console.log("message: ", res.message);
+        console.log("response: ", res.response);
+      }
+      setIsClicked(true);
+    });
   };
 
   const playerLeaveHandler = () => {
@@ -161,60 +192,75 @@ function TicTacToePage() {
         )}
       </div>
       {isWaiting ? (
-        <h1>Waiting for opponent</h1>
+        <>
+          <h1 className="Waiting">Waiting for your opponent</h1>
+          <div className="loader"></div>
+        </>
       ) : (
         <div className="game-container">
-          <h1>Let's Play TicTacToe</h1>
-          <h2>
-            player{" "}
-            {roomData.turn === roomData.player1Id
-              ? roomData.player1Username
-              : roomData.player2Username}
-            's turn
-          </h2>
-          <div className="Scoreboard">
-            <span>
-              {roomData.player1Username}: {xscore}
-            </span>
-            <span>
-              {roomData.player2Username}: {oscore}
-            </span>
-          </div>
-          {/* created a new array of Squares Component
+          <div className="game-wrapper">
+            <h1 className="shadow">Let's Play TicTacToe</h1>
+            <div className="Scoreboard">
+              <span>
+                {roomData.player1Username}(<span className="x">X</span>):{" "}
+                {xscore}
+              </span>
+              <span>
+                {roomData.player2Username}(<span className="o">O</span>):{" "}
+                {oscore}
+              </span>
+            </div>
+            <h2 className="shadow">
+              player{" "}
+              {roomData.turn === roomData.player1Id
+                ? roomData.player1Username
+                : roomData.player2Username}
+              's turn
+            </h2>
+            {/* created a new array of Squares Component
          using the map() and the created array earlier ---> const [squares, setSquares] = useState(new Array(9).fill(null));*/}
-          {/* the x and o props determines if the square is x or o */}
-          <Board>
-            {roomData.squares.map((square, index) => (
-              <Squares
-                key={index}
-                x={square === "x" ? 1 : 0}
-                o={square === "o" ? 1 : 0}
-                onClick={() => ClickHandler(index)}
-              />
-            ))}
-            {winner && (
-              <div className="round-over">
-                <h5>Player {winner} Won the Game</h5>
-                <button
-                  className="restart-button"
-                  onClick={() => restartHandler()}
-                >
-                  Play Again
-                </button>
-              </div>
-            )}
-            {draw && !winner && (
-              <div className="round-over">
-                <h5>It's a Draw</h5>
-                <button
-                  className="restart-button"
-                  onClick={() => restartHandler()}
-                >
-                  Play Again
-                </button>
-              </div>
-            )}
-          </Board>
+            {/* the x and o props determines if the square is x or o */}
+            <Board>
+              {roomData.squares.map((square, index) => (
+                <Squares
+                  key={index}
+                  x={square === "x" ? 1 : 0}
+                  o={square === "o" ? 1 : 0}
+                  onClick={() => ClickHandler(index)}
+                />
+              ))}
+              {isWinner && (
+                <div className="round-over">
+                  <h5>{playerWinner} Won the Game</h5>
+                  <button
+                    className="restart-button"
+                    onClick={() => restartHandler()}
+                  >
+                    {isClicked ? (
+                      <span>waiting for the opponent...</span>
+                    ) : (
+                      <span>Play Again</span>
+                    )}
+                  </button>
+                </div>
+              )}
+              {isDraw && !isWinner && (
+                <div className="round-over">
+                  <h5>It's a Draw</h5>
+                  <button
+                    className="restart-button"
+                    onClick={() => restartHandler()}
+                  >
+                    {isClicked ? (
+                      <span>waiting for the opponent...</span>
+                    ) : (
+                      <span>Play Again</span>
+                    )}
+                  </button>
+                </div>
+              )}
+            </Board>
+          </div>
         </div>
       )}
     </>
