@@ -2,18 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 import { Link, Navigate, useParams, useNavigate } from "react-router-dom";
-import MainNavigation from "./MainNavigation";
-import { RoomsCollection } from "../db/RoomsCollection";
+import MainNavigation from "../components/MainNavigation";
+import { RoomsCollection } from "../../db/RoomsCollection";
 import LoginForm from "./LoginForm.jsx";
-import Board from "./board.jsx";
-import Squares from "./squares.jsx";
+import Board from "../components/board.jsx";
+import Squares from "../components/squares.jsx";
+import Modal from "../components/Modal";
 
 function TicTacToePage() {
   let { roomId } = useParams();
   const user = useTracker(() => Meteor.userId());
-  const logout = () => Meteor.logout();
   let navigate = useNavigate();
-  const [isChecking, setIsChecking] = useState(true);
 
   const { roomData } = useTracker(() => {
     Meteor.subscribe("rooms.getRoom", roomId);
@@ -21,8 +20,6 @@ function TicTacToePage() {
     return { roomData };
   });
 
-  // const [squares, setSquares] = useState([]);
-  const [turn, setTurn] = useState();
   const [playerWinner, setPlayerWinner] = useState();
   const [isWinner, setIsWinner] = useState(false);
   const [isDraw, setIsDraw] = useState(false);
@@ -32,20 +29,18 @@ function TicTacToePage() {
   const [isWaiting, setIsWaiting] = useState(true);
   const [Player2, setPlayer2] = useState(null);
   const [tempScore, setTempScore] = useState(0);
+  const [response, setResponse] = useState();
 
   useEffect(() => {
     if (roomData) {
-      if (isWaiting) {
-        checkForPlayer();
-      } else {
-        checkForWinner(roomData.squares);
-        setxScore(roomData.xScore);
-        setoScore(roomData.oScore);
-        setIsWinner(roomData.winner);
-        setIsDraw(roomData.draw);
-        if (isWinner === false && isDraw === false) {
-          setIsClicked(false);
-        }
+      checkForPlayer();
+      checkForWinner(roomData.squares);
+      setxScore(roomData.xScore);
+      setoScore(roomData.oScore);
+      setIsWinner(roomData.winner);
+      setIsDraw(roomData.draw);
+      if (isWinner === false && isDraw === false) {
+        setIsClicked(false);
       }
     }
   }, [roomData]);
@@ -57,9 +52,24 @@ function TicTacToePage() {
       setIsWaiting(false);
     } else {
       // console.log("waiting for Opponent ");
+      Meteor.call("reset.RoomData", roomId);
       setIsWaiting(true);
     }
   };
+
+  const logout = (e) => {
+    e.preventDefault();
+    Meteor.logout();
+    setResponse(null);
+  };
+
+  const closeModal = () => {
+    setResponse(null);
+  };
+
+  const openModal = () => {
+    setResponse("Are you sure you want to log out?");
+  }
 
   const checkForWinner = (squares, index) => {
     let patterns = [
@@ -86,8 +96,7 @@ function TicTacToePage() {
       if (
         squares[a] &&
         squares[a] === squares[b] &&
-        squares[b] === squares[c] &&
-        !boxFull
+        squares[a] === squares[c]
       ) {
         if (squares[a] === "x") {
           status = "p1";
@@ -96,21 +105,7 @@ function TicTacToePage() {
           status = "p2";
           setPlayerWinner(roomData.player2Username);
         }
-      }
-      if (boxFull === true) {
-        if (
-          squares[a] &&
-          squares[a] === squares[b] &&
-          squares[b] === squares[c]
-        ) {
-          if (squares[a] === "x") {
-            status = "p1";
-            setPlayerWinner(roomData.player1Username);
-          } else if (squares[a] === "o") {
-            status = "p2";
-            setPlayerWinner(roomData.player2Username);
-          }
-        }
+      } else if (boxFull === true) {
         if (
           squares[a] !== squares[b] &&
           squares[a] !== squares[c] &&
@@ -119,20 +114,6 @@ function TicTacToePage() {
           status = "draw";
         }
       }
-
-      // if (boxFull === true) {
-      //   if (square[a] && square[a] === square[b] && square[b] === square[c]) {
-      //     setWinner(square[a]);
-      //     if (square[a] === "x") {
-      //       // setxScore(xscore + 1);
-      //     } else if (square[a] === "o") {
-      //       // setoScore(oscore + 1);
-      //     }
-      //   }
-      //   if (square[a] !== square[b] && square[a] !== square[c] && !winner) {
-      //     setDraw(true);
-      //   }
-      // }
     }
     if (status === "p1") {
       setTempScore(xscore + 1);
@@ -146,19 +127,15 @@ function TicTacToePage() {
       Meteor.call("game.Draw", roomId);
       console.log("draw");
     }
-    // setIsChecking(false);
-    // console.log("checking after setting to false ", isChecking);
-    // return false;
   };
 
   const ClickHandler = (index) => {
-    setIsChecking(true);
-
     Meteor.call("place.move", roomId, index, roomData.squares, (err, res) => {
       if (res.status === "success") {
         // console.log("response ",res.response)
       } else {
-        alert(res.message);
+        setResponse(res.message)
+        // alert(res.message);
       }
     });
   };
@@ -182,8 +159,9 @@ function TicTacToePage() {
 
   return (
     <>
-      <MainNavigation />
-      {!user && <Navigate to="/" replace={true} />}
+      <MainNavigation onConfirm={openModal} />
+      {response && <Modal response={response} onClose={closeModal} onConfirm={logout} />}
+      {!user && !response && <Navigate to="/" replace={true} />}
       <div className="leave-btn">
         {Player2 === user ? (
           <button onClick={playerLeaveHandler}>Leave Room</button>
@@ -235,6 +213,7 @@ function TicTacToePage() {
                   <button
                     className="restart-button"
                     onClick={() => restartHandler()}
+                    disabled={isClicked}
                   >
                     {isClicked ? (
                       <span>waiting for the opponent...</span>
@@ -250,6 +229,7 @@ function TicTacToePage() {
                   <button
                     className="restart-button"
                     onClick={() => restartHandler()}
+                    disabled={isClicked}
                   >
                     {isClicked ? (
                       <span>waiting for the opponent...</span>

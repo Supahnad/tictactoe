@@ -2,9 +2,10 @@ import { Meteor } from "meteor/meteor";
 import React, { useState, useEffect } from "react";
 import { Navigate, Link, useNavigate, useParams } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
-import MainNavigation from "./MainNavigation";
-import { RoomsCollection } from "../db/RoomsCollection";
-import RoomList from "./RoomList.jsx";
+import MainNavigation from "../components/MainNavigation";
+import { RoomsCollection } from "../../db/RoomsCollection";
+import RoomList from "../components/RoomList.jsx";
+import Modal from "../components/Modal";
 
 function HomePage(props) {
   const currentUser = useTracker(() => Meteor.user());
@@ -14,7 +15,12 @@ function HomePage(props) {
   const [fName, setfName] = useState();
   const [lName, setlName] = useState();
   const [username, setUsername] = useState();
+  const [response, setResponse] = useState();
   let navigate = useNavigate();
+
+  // useEffect(() => {
+  //   auth();
+  // },[user]);
 
   const checkForUser = () => {
     if (currentUser) {
@@ -22,13 +28,27 @@ function HomePage(props) {
       setlName(currentUser.profile.lastName);
       setUsername(currentUser.username);
     } else {
-      console.log("not logged in");
+      console.log("Loading");
     }
+  };
+  // const auth = () => {
+  //   if(!user){
+  //     navigate("/");
+  //   }
+  // }
+
+  const openModal = () => {
+    setResponse("Are you sure you want to log out?");
+  };
+
+  const closeModal = () => {
+    setResponse(null);
   };
 
   const logout = (e) => {
     e.preventDefault();
     Meteor.logout();
+    setResponse(null);
   };
 
   const submitHandler = (event) => {
@@ -52,7 +72,7 @@ function HomePage(props) {
 
   return (
     <div>
-      <MainNavigation />
+      <MainNavigation onConfirm={openModal} />
       {
         <div className="nameOfUser">
           <h3>
@@ -60,7 +80,10 @@ function HomePage(props) {
           </h3>
         </div>
       }
-      {!user && <Navigate to="/" replace={true} />}
+      {response && (
+        <Modal response={response} onClose={closeModal} onConfirm={logout} />
+      )}
+      {!user && !response && <Navigate to="/" replace={true} />}
       <div className="room-container">
         <form className="room-form" onSubmit={submitHandler}>
           <div>

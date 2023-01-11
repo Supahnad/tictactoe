@@ -2,9 +2,16 @@ import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Route, Routes, Link } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
+import Modal from "./Modal";
 
-function roomCreate() {
-  const logout = () => Meteor.logout();
+function roomCreate({ onConfirm }) {
+  // const [response, setResponse] = useState();
+
+  // const logout = () => {
+  //   setResponse("successfully Logged Out!")
+  //   // Meteor.logout();
+  // } 
+
 
   return (
     <>
@@ -13,7 +20,7 @@ function roomCreate() {
           <Link className="Logo" to="/Home">
             Tic Tac Toe
           </Link>
-          <button onClick={logout} className="logout-btn">
+          <button onClick={onConfirm} className="logout-btn">
             <span>Log out</span>
           </button>
         </header>

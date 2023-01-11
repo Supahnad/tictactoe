@@ -1,6 +1,8 @@
 import { Meteor } from "meteor/meteor";
+import { Accounts } from "meteor/accounts-base";
 import { check } from "meteor/check";
 import { RoomsCollection } from "../db/RoomsCollection";
+
 
 Meteor.methods({
   "createRoom"(name, username) {
@@ -29,6 +31,23 @@ Meteor.methods({
     });
 
     return roomId;
+  },
+  "create.User"(username, password, email,Fname,Lname) {
+    check(username, String);
+    check(password, String);
+    check(email, String);
+    check(Fname, String);
+    check(Lname, String);
+
+    Accounts.createUser({
+      username: username,
+      password: password,
+      email: email,
+      profile: {
+        firstName: Fname,
+        lastName: Lname,
+      },
+    });
   },
 
   "insert.player"(roomId, username) {
@@ -282,5 +301,31 @@ Meteor.methods({
         response: room.winner,
       };
     }
+  },
+  "reset.RoomData"(roomId) {
+    check(roomId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    const room = RoomsCollection.findOne({ _id: roomId });
+    if(room.player2Id === null){
+      RoomsCollection.update(
+        { _id: roomId },
+        {
+          $set: {
+            oScore: 0,
+            xScore: 0,
+            squares: new Array(9).fill(null),
+            winner: false,
+            draw: false,
+            rematch: 0,
+            turn: room.player1Id,
+          },
+        }
+      );
+    }
+    
   },
 });

@@ -3,11 +3,11 @@ import { Meteor } from "meteor/meteor";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
-import HomePage from "./HomePage.jsx";
-import TicTacToePage from "./TictactoePage.jsx";
-import LoginForm from "./LoginForm.jsx";
-import RegisterForm from "./RegisterForm.jsx";
-import RoomPage from "./RoomPage.jsx";
+import HomePage from "../pages/HomePage.jsx";
+import TicTacToePage from "../pages/TictactoePage.jsx";
+import LoginForm from "../pages/LoginForm.jsx";
+import RegisterForm from "../pages/RegisterForm.jsx";
+import RoomPage from "../pages/RoomPage.jsx";
 
 export const App = () => {
   return (
